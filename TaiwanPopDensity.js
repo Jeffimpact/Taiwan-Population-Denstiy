@@ -27,14 +27,14 @@ var path = d3.geoPath().projection(projection);
 
 //Define quantize scale to sort data values into buckets of color
 var color = d3.scaleThreshold()
-    .domain([1, 10, 50, 200, 500, 1000, 2000, 4000])
+    .domain([50, 100, 250, 500, 1000, 2000, 4000, 9000])
 //    .domain([1, 10, 100, 200, 300, 500, 1000, 2000])
     .range(d3.schemeOrRd[9]);
 
 
 var x = d3.scaleSqrt()
-    .domain([0, 4500])
-    .rangeRound([450, 950]);
+    .domain([25, 10000])
+    .rangeRound([300, 950]);
 
 var g = svg.append("g")
     .attr("class", "key")
@@ -61,7 +61,7 @@ g.append("text")
     .attr("text-anchor", "start")
     .attr("font-weight", "bold")
     .attr("font-size", "150%")
-    .text("Population per square mile");
+    .text("Population per square kilometers");
 
 g.call(d3.axisBottom(x)
     .tickSize(13)
@@ -72,12 +72,13 @@ g.call(d3.axisBottom(x)
 //    City,Population density
     
 d3.csv("PopulationDensity.csv").then(function(data) {
-    
+
+
     d3.json("gadm36_TWN_2_Topo.json").then(function(json) { // topojson
             
             // Define feature from topojson feature structures
             var topofeature = topojson.feature(json, json.objects.gadm36_TWN_2);
-//            console.log("features in JSON are: ", topofeature);
+            console.log("features in JSON are: ", topofeature);
             
             var geometry = json.objects.gadm36_TWN_2.geometries;
             console.log("geo len: ", geometry.length);
@@ -93,7 +94,8 @@ d3.csv("PopulationDensity.csv").then(function(data) {
 				console.log("index is: ", i);
 //                        
 				//Grab data value, and convert from string to float
-				var dataValue = parseFloat(data[i].density);
+				var dataValue = data[i].density;
+//                    parseFloat(data[i].density);
                 console.log("City Density: ", dataValue);
 //                    data[i].Density;
 
@@ -103,7 +105,7 @@ d3.csv("PopulationDensity.csv").then(function(data) {
                         
                         if (dataCity === jsonCity){
                             //Copy the data value into the JSON
-                            geometry[i].properties.density = dataValue;
+                            geometry[j].properties.density = dataValue;
 
                             break;
                         }
@@ -120,6 +122,10 @@ d3.csv("PopulationDensity.csv").then(function(data) {
                 .attr("fill", function(d) {
 
                     var  value = d.properties.density;
+                
+//                    console.log("density: ",value);
+//                    console.log("color: ",color(value));
+                
                     if (value){
                         return color(value);
                     }
@@ -129,6 +135,7 @@ d3.csv("PopulationDensity.csv").then(function(data) {
                          })
                 .attr("d", path);
         
+        
         // modify the boundary 
           svg.append("path")
               .datum(topofeature)
@@ -136,7 +143,8 @@ d3.csv("PopulationDensity.csv").then(function(data) {
               .attr("stroke", "#000")
               .attr("stroke-opacity", 0.25)
               .attr("d", path);
-          
+        
+                
         });  // end json
     
 });  // end csv
