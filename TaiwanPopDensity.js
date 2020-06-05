@@ -73,13 +73,6 @@ g.call(d3.axisBottom(x)
     
 d3.csv("PopulationDensity.csv").then(function(data) {
     
-    // Rewatch color domain section 3 ~ 00:56
-//    color.domain([
-//        d3.min(data, function(d) { return d.Population; }), 
-//        d3.max(data, function(d) { return d.Population; })
-//    ]);
-
-
     d3.json("gadm36_TWN_2_Topo.json").then(function(json) { // topojson
             
             // Define feature from topojson feature structures
@@ -143,8 +136,7 @@ d3.csv("PopulationDensity.csv").then(function(data) {
               .attr("stroke", "#000")
               .attr("stroke-opacity", 0.25)
               .attr("d", path);
-        
-                
+          
         });  // end json
     
 });  // end csv
